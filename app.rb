@@ -40,22 +40,32 @@ end
 
 #===========================Select from db=======================//
 #===========================SHOW ON /showusers===================//
-get '/showusers' do
+post '/showusers' do
+		@password = params[:passadmin]
+	if @password == 'admin'
+		db = get_db
+		db.results_as_hash = true
 
-	db = get_db
 	db.execute "select * from Users" do |row|
 		string = "<tr>
-          <th scope='row'>#{row[0]}</th>
-          <td>#{row[1]}</td>
-          <td>#{row[2]}</td>
-          <td>#{row[3]}</td>
-          <td>#{row[4]}</td>
-          <td>#{row[5]}</td>
+          <th scope='row'>#{row['id']}</th>
+          <td>#{row['username']}</td>
+          <td>#{row['phone']}</td>
+          <td>#{row['datestamp']}</td>
+          <td>#{row['barber']}</td>
+          <td>#{row['color']}</td>
         </tr>"
 	 	@tabledb = @tabledb.to_s + string
+	 end
+	 else
+	 	erb '<div class="alert alert-danger"> <p>Пароль не правельный!</p></div>'
 	end
 	erb :showusers
+end
 
+get '/showusers' do
+
+	erb :showusers
 end
 #==================================================================//
 
