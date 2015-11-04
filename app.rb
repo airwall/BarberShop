@@ -16,7 +16,6 @@ configure do
 				"username" TEXT, 
 				"phone" TEXT, 
 				"datestamp" TEXT, 
-				"hourstamp" TEXT,
 				"barber" TEXT, 
 				"color" TEXT
 			)'
@@ -38,7 +37,7 @@ get '/about' do
 	erb :about
 
 end
-
+#==================================================================//
 
 #============================== Visit Post Form ===================//
 post '/visit' do
@@ -46,11 +45,10 @@ post '/visit' do
 	@name = params[:name]
 	@phone = params[:phone]
 	@barber = params[:barber]
-	@day = params[:day]
-	@hours = params[:hours]
+	@datestamp = params[:datestamp]
 	@col = params[:col]
 		
-		hh = {:name => 'Введите имя', :phone => 'Введите номер телефона'}
+		hh = {:name => 'Введите имя', :phone => 'Введите номер телефона', :datestamp => 'Выберите время и дату'}
 
 	hh.each do |k, v|
 		if params[k] == ''
@@ -63,12 +61,13 @@ post '/visit' do
 	if @error != ''
 		db = get_db
 		db.execute 'insert into 
-			Users ( username, phone, datestamp, hourstamp, barber, color ) 
-		values ( ?, ?, ?, ?, ?, ? )', [@name, @phone, @day, @hours, @barber, @col]
+			Users ( username, phone, datestamp, barber, color ) 
+		values ( ?, ?, ?, ?, ? )', [@name, @phone, @datestamp, @barber, @col]
 		erb :visit
 	end	
 		
 end
+#============================================================\\\
 #======================E-Mail Form Post ===================== \\\      
 post '/contacts' do
     mail = params[:mail]

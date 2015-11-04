@@ -5,7 +5,7 @@
 <div><p class="text-info">На этой странице вы можете записаться в Barber Shop</p></div>
 
 <%if @name && @name.length > 0 && @phone && @phone.length > 0 then %>
-			          <div class="alert alert-info"><p class="text-left"><%=@name%>, Вы записаны на <%=@datestamp%>, к парикмахеру <%=@barber%></p></div>
+			          <div class="alert alert-info"><p class="text-left"><%=@name%>, Вы записаны на <%=@day%> в <%=@hours%> часов, к парикмахеру <%=@barber%></p></div>
 			      <% end %>
 
 <form action="/visit" method="POST"  role="form" >
@@ -17,9 +17,9 @@
     <label>Телефон</label>
     <input type="text" name='phone' class="form-control"  placeholder="079 515151" value="<%=@phone%>"
   </div>
-<p></p>
+
   <div class="form-grup">
-		  <label>Выберите парикмахера</label>
+		  <label for="barbername">Выберите парикмахера</label>
 		  <select class="form-control" id="barbername" name="barber" >
 		  <option <%= @barber == 'Александра' ? 'selected' : '' %>>Александра</option>
 		  <option <%= @barber == 'Лариса' ? 'selected' : '' %>>Лариса</option>
@@ -27,9 +27,35 @@
 		  </select>
 </div>	
 <p></p>
-<label>Выберите дату и время</label>
-<div class="form-grup">
- <input class="form-control" name ='datestamp' id="datetimepicker_rantime" type="text" value="<%=@datestamp%>">
+<div class="row">
+  <div class="col-xs-7">
+      <label for="dayform">Выбрать день</label>
+      <select class="form-control" id="dayform" name="day">
+      <option <%= @day == 'Понедельник' ? 'selected' : '' %>>Понедельник</option>
+      <option <%= @day == 'Вторник' ? 'selected' : '' %>>Вторник</option>
+      <option <%= @day == 'Среда' ? 'selected' : '' %>>Среда</option>
+      <option <%= @day == 'Четверг' ? 'selected' : '' %>>Четверг</option>
+      <option <%= @day == 'Пятница' ? 'selected' : '' %>>Пятница</option>
+      <option <%= @day == 'Суббота' ? 'selected' : '' %>>Суббота</option>
+      </select>
+  </div>
+  
+  <div class="col-xs-5">
+  		<label for="hoursform">Время</label>
+        <select class="form-control" id="hoursform" name="hours">
+        <option <%= @hours == '9:00' ? 'selected' : '' %>>9:00</option>
+        <option <%= @hours == '10:00' ? 'selected' : '' %>>10:00</option>
+        <option <%= @hours == '11:00' ? 'selected' : '' %>>11:00</option>
+        <option <%= @hours == '12:00' ? 'selected' : '' %>>12:00</option>
+        <option <%= @hours == '13:00' ? 'selected' : '' %>>13:00</option>
+        <option <%= @hours == '14:00' ? 'selected' : '' %>>14:00</option>
+        <option <%= @hours == '15:00' ? 'selected' : '' %>>15:00</option>
+        <option <%= @hours == '16:00' ? 'selected' : '' %>>16:00</option>
+        <option <%= @hours == '17:00' ? 'selected' : '' %>>17:00</option>
+        <option <%= @hours == '18:00' ? 'selected' : '' %>>18:00</option>
+        </select>
+        
+  </div>
 </div>
 
   <p></p>
@@ -68,29 +94,6 @@
 $(function() {
   $('#color').simplecolorpicker();
 });
-</script>
-
-<script type="text/javascript">
-  var logic = function( currentDateTime ){
-  // 'this' is jquery object datetimepicker
-  if( currentDateTime.getDay()==0 ){
-    this.setOptions({
-      minTime:'10:00',
-      maxTime:'16:00',
-      minDate:0
-    });
-  }else
-    this.setOptions({
-      minTime:'9:00',
-      maxTime:'19:00',
-      minDate:0      
-    });
-};
-jQuery('#datetimepicker_rantime').datetimepicker({
-  onChangeDateTime:logic,
-  onShow:logic
-});
-$.datetimepicker.setLocale('ru');
 </script>
 
 
