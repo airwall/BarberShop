@@ -3,17 +3,22 @@ require 'sinatra'
 require 'sinatra/reloader'
 require 'sqlite3'
 
-configure do
-	@db = SQLite3::Database.new 'barbershop.db'
-	@db.execute 'CREATE TABLE IF NOT EXISTS 
+def get_db
+	return SQLite3::Database.new 'barbershop.db'
+end
+
+configure do 
+	db = get_db
+	db.execute 'CREATE TABLE IF NOT EXISTS 
 			"Users" 
 			(
 				"id" INTEGER PRIMARY KEY AUTOINCREMENT, 
-				"username" VARCHAR, 
-				"phone" VARCHAR, 
-				"datestamp" VARCHAR, 
-				"barber" VARCHAR, 
-				"color" VARCHAR
+				"username" TEXT, 
+				"phone" TEXT, 
+				"datestamp" TEXT, 
+				"hourstamp" TEXT,
+				"barber" TEXT, 
+				"color" TEXT
 			)'
 end
 
@@ -34,6 +39,8 @@ get '/about' do
 
 end
 
+
+#============================== Visit Post Form ===================//
 post '/visit' do
 
 	@name = params[:name]
@@ -54,13 +61,15 @@ post '/visit' do
 
 
 	if @error != ''
-		File.open("./public/users.txt", "a") {|l| l.write("Имя: #{@name}, Телефон: #{@phone}, К кому: #{@barber}, Когда: #{@day} - #{@hours}, Цвет: #{@col}\n====================================================================\n") }
+		db = get_db
+		db.execute 'insert into 
+			Users ( username, phone, datestamp, hourstamp, barber, color ) 
+		values ( ?, ?, ?, ?, ?, ? )', [@name, @phone, @day, @hours, @barber, @col]
 		erb :visit
 	end	
 		
 end
-
-      
+#======================E-Mail Form Post ===================== \\\      
 post '/contacts' do
     mail = params[:mail]
     body = params[:body]
