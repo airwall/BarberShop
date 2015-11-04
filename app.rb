@@ -37,7 +37,28 @@ get '/about' do
 	erb :about
 
 end
+
+#===========================Select from db=======================//
+#===========================SHOW ON /showusers===================//
+get '/showusers' do
+
+	db = get_db
+	db.execute "select * from Users" do |row|
+		string = "<tr>
+          <th scope='row'>#{row[0]}</th>
+          <td>#{row[1]}</td>
+          <td>#{row[2]}</td>
+          <td>#{row[3]}</td>
+          <td>#{row[4]}</td>
+          <td>#{row[5]}</td>
+        </tr>"
+	 	@tabledb = @tabledb.to_s + string
+	end
+	erb :showusers
+
+end
 #==================================================================//
+
 
 #============================== Visit Post Form ===================//
 post '/visit' do
