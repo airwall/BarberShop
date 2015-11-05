@@ -21,7 +21,9 @@
   <div class="form-grup">
 		  <label>Выберите парикмахера</label>
 		  <select class="form-control" id="barbername" name="barber" >
-		  <%=@barberdb%>
+		  <% @resultbarber.each do |row| %>
+          <option><%= row['name'] %></option>
+      <% end %>
 		  </select>
 </div>	
 <p></p>

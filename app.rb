@@ -50,11 +50,8 @@ end
 
 get '/visit' do
 	db = get_dbarber
-		db.results_as_hash = true
-		db.execute "select * from Barbers" do |row|
-		string = "<option>#{row['name']}</option>"
-	 	@barberdb = @barberdb.to_s + string
-		end
+	db.results_as_hash = true
+	@resultbarber = db.execute "select * from Barbers order by name" 
 	erb :visit
 end
 
