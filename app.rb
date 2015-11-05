@@ -3,26 +3,33 @@ require 'sinatra'
 require 'sinatra/reloader'
 require 'sqlite3'
 
+def is_barber_exist? db, name
+	db.execute('select * from Barbers where name=?', [name]).length > 0
+end
+
+def seed_db db, barbers
+
+	barbers.each do |barber|
+		if !is_barber_exist? db, barber
+			db.execute 'insert into Barbers (name) values (?)', [barber]
+		end
+	end
+
+end
+
 def get_db
 	return SQLite3::Database.new 'barbershop.db'
 end
 
-def get_dbarber 
-	return SQLite3::Database.new 'barber.db'
+before do
+	db = get_db
+	db.results_as_hash = true
+	@barbers = db.execute "select * from Barbers order by name"
 end
-
-# def select_barber bb
-# 	db = get_dbarber
-# 		db.results_as_hash = true
-# 		db.execute "select * from Barbers" do |row|
-# 		string = "<option>#{row['name']}</option>"
-# 	 	bb = bb.to_s + string
-# 		end
-# end
 
 #=====================================CREATE TABLES===================================
 configure do 												#
-	db = get_dbarber  										#
+	db = get_db 										#
 	db.execute 'CREATE TABLE IF NOT EXISTS 						
 			"Users" 
 			(
@@ -33,10 +40,11 @@ configure do 												#
 				"barber" TEXT, 
 				"color" TEXT
 			)'
-	db = get_dbarber
+	
 	db.execute 'CREATE TABLE IF NOT EXISTS "Barbers" 
-		     (
-				"name" TEXT PRIMARY KEY 
+		     (	
+		     	"id" INTEGER PRIMARY KEY AUTOINCREMENT,
+				"name" TEXT 
 				)'
 end
 #====================================================================================
@@ -49,35 +57,11 @@ get '/contacts' do
 end
 
 get '/visit' do
-	db = get_dbarber
-	db.results_as_hash = true
-	@resultbarber = db.execute "select * from Barbers order by name" 
+	# db = get_db
+	# db.results_as_hash = true
+	# @resultbarber = db.execute "select * from Barbers order by name" 
 	erb :visit
 end
-
-get '/about' do
-	erb :about
-
-end
-
-
-#================================POST SHOWUSERS===================//
-post '/showusers' do
-			@newbarber = params[:newbarber]
-		db = get_dbarber
-		db.execute 'INSERT OR REPLACE INTO
-			Barbers ( name ) 
-		values ( ? )', [@newbarber]
-	redirect :showusers	
-end
-#==============================LIST DATABASE=============================//
-get '/showusers' do
-	db = get_db
-	db.results_as_hash = true
-	@results = db.execute 'select * from Users order by id desc'
-	erb :showusers
-end
-#==================================================================//
 #============================== POST VISIT   ===================//
 post '/visit' do
 
@@ -109,6 +93,24 @@ post '/visit' do
 		
 end
 #============================================================\\\
+get '/about' do
+	erb :about
+end
+#================================POST SHOWUSERS===================//
+post '/showusers' do
+		db = get_db
+		seed_db db, [params[:newbarber]]
+	redirect :showusers	
+end
+#==============================LIST DATABASE=============================//
+get '/showusers' do
+	db = get_db
+	db.results_as_hash = true
+	@results = db.execute 'select * from Users order by id desc'
+	erb :showusers
+end
+#==================================================================//
+
 #======================E-Mail Form Post ===================== \\\      
 post '/contacts' do
     mail = params[:mail]
