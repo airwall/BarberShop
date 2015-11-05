@@ -7,9 +7,23 @@ def get_db
 	return SQLite3::Database.new 'barbershop.db'
 end
 
-configure do 
-	db = get_db
-	db.execute 'CREATE TABLE IF NOT EXISTS 
+def get_dbarber 
+	return SQLite3::Database.new 'barber.db'
+end
+
+# def select_barber bb
+# 	db = get_dbarber
+# 		db.results_as_hash = true
+# 		db.execute "select * from Barbers" do |row|
+# 		string = "<option>#{row['name']}</option>"
+# 	 	bb = bb.to_s + string
+# 		end
+# end
+
+#=====================================CREATE TABLES===================================
+configure do 												#
+	db = get_dbarber  										#
+	db.execute 'CREATE TABLE IF NOT EXISTS 						
 			"Users" 
 			(
 				"id" INTEGER PRIMARY KEY AUTOINCREMENT, 
@@ -19,8 +33,13 @@ configure do
 				"barber" TEXT, 
 				"color" TEXT
 			)'
+	db = get_dbarber
+	db.execute 'CREATE TABLE IF NOT EXISTS "Barbers" 
+		     (
+				"name" TEXT PRIMARY KEY 
+				)'
 end
-
+#====================================================================================
 get '/' do
 	erb "Hello! <a href=\"https://github.com/bootstrap-ruby/sinatra-bootstrap\">Original</a> pattern has been modified for <a href=\"http://rubyschool.us/\">Ruby School</a>"			
 end
@@ -30,6 +49,12 @@ get '/contacts' do
 end
 
 get '/visit' do
+	db = get_dbarber
+		db.results_as_hash = true
+		db.execute "select * from Barbers" do |row|
+		string = "<option>#{row['name']}</option>"
+	 	@barberdb = @barberdb.to_s + string
+		end
 	erb :visit
 end
 
@@ -38,48 +63,46 @@ get '/about' do
 
 end
 
-#===========================Select from db=======================//
-#===========================SHOW ON /showusers===================//
+
+#================================POST SHOUSERS===================//
 post '/showusers' do
-		@password = params[:passadmin]
-	if @password == 'admin'
-		db = get_db
-		db.results_as_hash = true
-
-	db.execute "select * from Users" do |row|
-		string = "<tr>
-          <th scope='row'>#{row['id']}</th>
-          <td>#{row['username']}</td>
-          <td>#{row['phone']}</td>
-          <td>#{row['datestamp']}</td>
-          <td>#{row['barber']}</td>
-          <td>#{row['color']}</td>
-        </tr>"
-	 	@tabledb = @tabledb.to_s + string
-	 end
-	 else
-	 	erb '<div class="alert alert-danger"> <p>Пароль не правельный!</p></div>'
-	end
-	erb :showusers
+			@newbarber = params[:newbarber]
+		db = get_dbarber
+		db.execute 'INSERT OR REPLACE INTO
+			Barbers ( name ) 
+		values ( ? )', [@newbarber]
+	redirect :showusers	
 end
-
+#================================================================//
 get '/showusers' do
-
+	db = get_db
+		db.results_as_hash = true
+		db.execute "select * from Users" do |row|
+				string = "<tr>
+		          <th scope='row'>#{row['id']}</th>
+		          <td>#{row['username']}</td>
+		          <td>#{row['phone']}</td>
+		          <td>#{row['datestamp']}</td>
+		          <td>#{row['barber']}</td>
+		          <td>#{row['color']}</td>
+		        </tr>"
+			 	@tabledb = @tabledb.to_s + string
+			 	end
 	erb :showusers
 end
 #==================================================================//
-
-
-#============================== Visit Post Form ===================//
+#============================== POST VISIT   ===================//
 post '/visit' do
 
 	@name = params[:name]
 	@phone = params[:phone]
 	@barber = params[:barber]
 	@datestamp = params[:datestamp]
-	@col = params[:col]
+	@col = params[:col]	
+	
 		
-		hh = {:name => 'Введите имя', :phone => 'Введите номер телефона', :datestamp => 'Выберите время и дату'}
+		hh = {:name => 'Введите имя', :phone => 'Введите номер телефона', 
+			  :datestamp => 'Выберите время и дату'}
 
 	hh.each do |k, v|
 		if params[k] == ''
