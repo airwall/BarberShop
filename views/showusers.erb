@@ -1,15 +1,29 @@
 
  
-<div class="form-group ">
+<div class="row">
+  <div class="col-md-6">
+      <form class="form-inline" action="/showusers" method="POST"  role="form">
+                  <div class="form-group">
+        <input type="barbername" name="newbarber" class="form-control"  placeholder="Введите имя нового парекмахера">
+      </div>
+      
+      <button type="submit" class="btn btn-default">Записать</button>
+        </form>
+      </div>
+      <div class="col-md-6">
+      <form class="form-inline" action="/showusers" method="POST"  role="form">
+  <select class="form-control" name="delbarb">
 
-              <form class="form-inline" action="/showusers" method="POST"  role="form">
-              <div class="form-group">
-    <input type="barbername" name="newbarber" class="form-control"  placeholder="Введите имя нового парекмахера">
-  </div>
+  <% @barbers.each do |item| %>
+        <option> <%= item['name'] %></option>
+      <% end %>
   
-  <button type="submit" class="btn btn-default">Записать</button>
-              </form>
-              </div>
+  </select>
+<button type="submit" class="btn btn-default">Удалить</button>
+</form>
+  </div>
+</div>
+
 
 <p></p></br>
 <table class="table table-condensed table-striped">
@@ -29,7 +43,7 @@
       <td><%= row['phone'] %></td>
       <td><%= row['datestamp'] %></td>
       <td><%= row['barber'] %></td>
-      <td><%= row['color'] %></td>
+      <td style="background-color: <%= row['color'] %>"><%= row['color'] %></td>
  </tr>
             <% end %>
 </tbody>

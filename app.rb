@@ -17,6 +17,13 @@ def seed_db db, barbers
 
 end
 
+# def delete_barber db, dbarber
+# 	if !is_barber_exist? db, dbarber
+# 		db.execute('DELETE FROM Barbers WHERE name=?', [dbarber])
+# 	end
+# 	erb :showusers
+# end
+
 def get_db
 	return SQLite3::Database.new 'barbershop.db'
 end
@@ -26,6 +33,8 @@ before do
 	db.results_as_hash = true
 	@barbers = db.execute "select * from Barbers order by name"
 end
+
+
 
 #=====================================CREATE TABLES===================================
 configure do 												#
@@ -57,9 +66,6 @@ get '/contacts' do
 end
 
 get '/visit' do
-	# db = get_db
-	# db.results_as_hash = true
-	# @resultbarber = db.execute "select * from Barbers order by name" 
 	erb :visit
 end
 #============================== POST VISIT   ===================//
@@ -88,7 +94,7 @@ post '/visit' do
 		db.execute 'insert into 
 			Users ( username, phone, datestamp, barber, color ) 
 		values ( ?, ?, ?, ?, ? )', [@name, @phone, @datestamp, @barber, @col]
-		erb :visit
+		erb  :visit
 	end	
 		
 end
@@ -96,10 +102,22 @@ end
 get '/about' do
 	erb :about
 end
+
+# get '/deletebarber' do
+# 	db = get_db
+# 	db.results_as_hash = true
+	
+	
+# end
 #================================POST SHOWUSERS===================//
 post '/showusers' do
 		db = get_db
 		seed_db db, [params[:newbarber]]
+		redirect :showusers	
+end
+post '/showusers' do
+		db = get_db
+		db.execute('DELETE FROM Barbers WHERE name=?', [params[:delbarb]])
 	redirect :showusers	
 end
 #==============================LIST DATABASE=============================//
