@@ -64,7 +64,7 @@ get '/about' do
 end
 
 
-#================================POST SHOUSERS===================//
+#================================POST SHOWUSERS===================//
 post '/showusers' do
 			@newbarber = params[:newbarber]
 		db = get_dbarber
@@ -73,21 +73,11 @@ post '/showusers' do
 		values ( ? )', [@newbarber]
 	redirect :showusers	
 end
-#================================================================//
+#==============================LIST DATABASE=============================//
 get '/showusers' do
 	db = get_db
-		db.results_as_hash = true
-		db.execute "select * from Users" do |row|
-				string = "<tr>
-		          <th scope='row'>#{row['id']}</th>
-		          <td>#{row['username']}</td>
-		          <td>#{row['phone']}</td>
-		          <td>#{row['datestamp']}</td>
-		          <td>#{row['barber']}</td>
-		          <td>#{row['color']}</td>
-		        </tr>"
-			 	@tabledb = @tabledb.to_s + string
-			 	end
+	db.results_as_hash = true
+	@results = db.execute 'select * from Users order by id desc'
 	erb :showusers
 end
 #==================================================================//

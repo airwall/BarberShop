@@ -1,6 +1,6 @@
 
  
-<div class="form-group alert alert-primary">
+<div class="form-group ">
 
               <form class="form-inline" action="/showusers" method="POST"  role="form">
               <div class="form-group">
@@ -15,7 +15,6 @@
 <table class="table table-condensed">
   <thead>
     <tr>
-      <th>#</th>
       <th>Имя</th>
       <th>Телефон</th>
       <th>Дата</th>
@@ -24,14 +23,16 @@
     </tr>
   </thead>
   <tbody>
-    <%= @tabledb %>
-  </tbody>
+          <% @results.each do |row| %>
+ <tr>
+      <td><%= row['username'] %></td>
+      <td><%= row['phone'] %></td>
+      <td><%= row['datestamp'] %></td>
+      <td><%= row['barber'] %></td>
+      <td><%= row['color'] %></td>
+ </tr>
+            <% end %>
+</tbody>
 </table>
-
-				
-
-
-
-
 			     
 
